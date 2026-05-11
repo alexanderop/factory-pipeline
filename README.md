@@ -6,7 +6,7 @@ A Claude Code skill that runs a multi-step coding pipeline
 tool. State lives on the filesystem under `.factory/runs/<id>/` so runs are
 inspectable and resumable.
 
-This is the skill-shaped port of the [`factory`](https://github.com/alexopalic/factory)
+This is the skill-shaped port of the [`factory`](https://github.com/alexanderop/factory)
 TypeScript framework — same pipeline shape, same fresh-context-per-step
 discipline, but it runs inside a single Claude Code session instead of
 shelling out to harness binaries.
@@ -47,7 +47,7 @@ Every state change appends one JSON line to
 ## Installation
 
 ```bash
-npx skills add https://github.com/alexopalic/factory-pipeline --skill factory-pipeline
+npx skills add https://github.com/alexanderop/factory-pipeline --skill factory-pipeline
 ```
 
 Or copy `skills/factory-pipeline/` into your project's `.claude/skills/`.
@@ -94,6 +94,6 @@ discipline, less infrastructure.
 
 ## Reference
 
-- factory: https://github.com/alexopalic/factory
+- factory: https://github.com/alexanderop/factory
 - The "fresh agent context per task" principle is documented in factory's
   own `CLAUDE.md`.

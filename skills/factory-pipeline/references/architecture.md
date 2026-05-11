@@ -1,6 +1,6 @@
 # Architecture
 
-This skill ports the [`factory`](https://github.com/alexopalic/factory) idea
+This skill ports the [`factory`](https://github.com/alexanderop/factory) idea
 into Claude Code's Skill + Task primitives.
 
 ## What factory does
@@ -64,6 +64,6 @@ Use this skill when:
 
 ## References
 
-- factory README: https://github.com/alexopalic/factory
+- factory README: https://github.com/alexanderop/factory
 - factory's own CLAUDE.md describes the "fresh agent context per task" rule
   that this skill operationalizes.
