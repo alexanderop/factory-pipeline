@@ -1,6 +1,6 @@
 # Architecture
 
-The reasoning behind the four design choices the skill makes. Read once per
+The reasoning behind the five design choices the skill makes. Read once per
 session before your first run, then trust SKILL.md.
 
 ## 1. Sequential steps with deterministic gates
@@ -41,19 +41,38 @@ no need to re-prompt the model to "remember what we did."
 
 `steps/plan.md`, `steps/ralph.md`, `steps/review.md`, `steps/pr.md` are not
 hard-coded. They are markdown files the orchestrator reads at runtime and
-passes verbatim to subagents.
+passes verbatim to the worker.
 
 Why: every project has different conventions. The plan format you want for a
 TypeScript monorepo is not the plan format you want for a Python data
 pipeline. Editing the prompt is a 30-second change; editing TypeScript step
 implementations is not.
 
+## 5. Harness-agnostic worker
+
+The orchestrator does not invoke any specific coding agent directly. Instead,
+`tools/run_step.sh <harness> <step>` builds the right argv for the user's
+chosen CLI — `claude`, `codex`, or `copilot` — and the same step prompt is
+fed into whichever one was picked. Adding a fourth harness is a `case`
+branch in one shell script.
+
+Why: each CLI has its own non-interactive invocation. Claude Code uses
+`-p` plus `--dangerously-skip-permissions`. Codex uses `codex exec` plus
+`--dangerously-bypass-approvals-and-sandbox`. Copilot uses `-p` plus
+`--allow-all`. All three diverge on flags but agree on the basic shape
+"feed a prompt, get text output, edit files in cwd." Pinning the skill to
+one of them throws away that interchangeability for no real gain.
+
+The corollary: the orchestrator never parses tool-event streams. Gates
+inspect filesystem artifacts (`plan.md`, `review.md`, `git diff --stat`)
+and exit codes — things that are invariant across harnesses.
+
 ## What this skill is not
 
-- Not a durable workflow. A run lives inside one Claude Code session. If you
-  kill the session, you resume manually with `--resume <run-id>`.
-- Not multi-harness. Only the Task tool acts as the worker — there's one
-  model in play, even though each call gets fresh context.
+- Not a durable workflow. A run lives inside one host session. If you kill
+  the host, you resume manually with `--resume <run-id>`.
+- Not a way to mix harnesses within a run. One `--harness` value applies to
+  every step. Cross-harness experiments need separate runs.
 - Not an observability platform. State changes go to JSONL events. If you
   want spans in a dashboard, export them yourself.
 - Not opinionated about project layout. The skill expects a git repo with
