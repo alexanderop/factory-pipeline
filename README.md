@@ -6,11 +6,6 @@ A Claude Code skill that runs a multi-step coding pipeline
 tool. State lives on the filesystem under `.factory/runs/<id>/` so runs are
 inspectable and resumable.
 
-This is the skill-shaped port of the [`factory`](https://github.com/alexanderop/factory)
-TypeScript framework — same pipeline shape, same fresh-context-per-step
-discipline, but it runs inside a single Claude Code session instead of
-shelling out to harness binaries.
-
 ## Usage
 
 ```
@@ -71,29 +66,9 @@ skills/factory-pipeline/
     └── validate_plan.py              # plan-step gate
 ```
 
-## When to prefer real factory over this skill
-
-- You want to mix harnesses (plan with Claude, ralph with Codex, etc.).
-- You want OTEL spans piped into a dashboard.
-- The pipeline must outlive any single editor session.
-- You want typed Effect services and not markdown-glued bash.
-
-When to prefer this skill:
-
-- You're already inside Claude Code and want the shape without setting up
-  a TypeScript project.
-- You want to prototype a pipeline before promoting it to real factory steps.
-- The work is small enough that one model and one session is fine.
-
 ## Why this exists
 
 Long sessions accrete failed attempts and biased priors — the orchestrator
-ends up second-guessing itself by step 3. factory solves this with fresh
-subprocess context per step; this skill solves it with the Task tool. Same
-discipline, less infrastructure.
-
-## Reference
-
-- factory: https://github.com/alexanderop/factory
-- The "fresh agent context per task" principle is documented in factory's
-  own `CLAUDE.md`.
+ends up second-guessing itself by step 3. This skill enforces fresh context
+per step by spawning a new subagent for each: plan, every ticket, review, pr.
+The orchestrator only reads artifacts and runs gates, never writes code itself.

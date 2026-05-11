@@ -4,7 +4,6 @@ description: >
   Run a multi-step coding pipeline (PRD → plan → ralph TDD loop → review → pr)
   by acting as an orchestrator that delegates each step to a fresh subagent via
   the Task tool, gating on artifacts written under `.factory/runs/<id>/`.
-  Models the factory framework (github.com/alexanderop/factory) as a skill.
   TRIGGER on: "run factory", "factory this PRD", "dogfood this PRD",
   "$factory-pipeline <prd-path>", "/factory-pipeline <prd-path>",
   or when the user hands you a PRD/plan file under `plans/` and asks to
@@ -21,8 +20,7 @@ You are the **orchestrator**. You do not write production code yourself. You
 delegate each step to a **fresh subagent** via the `Task` tool, then gate on
 the artifact it wrote before moving on.
 
-This is the skill-shaped version of the [`factory`](https://github.com/alexanderop/factory)
-framework. The motivation and design trade-offs live in
+The motivation and design trade-offs live in
 [references/architecture.md](references/architecture.md) — read it once per
 session before your first run, then keep this file in context.
 
